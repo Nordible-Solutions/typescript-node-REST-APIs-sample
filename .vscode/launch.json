@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceRoot}/lib/server.ts",
+            "cwd": "${workspaceRoot}",
+            "skipFiles": [
+                "node_modules/**/*.js"
+            ],
+            "outFiles": [
+                "${workspaceRoot}/dist/**/*.js"
+            ],
+            "sourceMaps": true,
+            "stopOnEntry": true,
+            "console": "internalConsole"
+        }
+    ]
+}
