@@ -6,7 +6,7 @@ import * as mongoose from "mongoose";
 class App {
     public app: express.Application;
     public battleRoutes: Routes = new Routes();
-    public mongoUrl: string = 'mongodb://localhost:27017/battlesDB';
+    public mongoUrl: string = process.env.MONGOURL ? process.env.MONGOURL || 'mongodb://localhost:27017/battlesDB';
 
     constructor() {
         this.app = express();
