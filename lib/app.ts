@@ -1,12 +1,13 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import { Routes } from './routes/battleRoutes'
+import { Routes } from './routes/battleRoutes';
+import config from './config/config';
 import * as mongoose from "mongoose";
 
 class App {
     public app: express.Application;
     public battleRoutes: Routes = new Routes();
-    public mongoUrl: string = process.env.MONGOURL ? process.env.MONGOURL : 'mongodb://localhost:27017/battlesDB';
+    public mongoUrl: string = config.MONGOURL;
 
     constructor() {
         this.app = express();
@@ -16,7 +17,6 @@ class App {
     }
 
     private config(): void {
-
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
     }

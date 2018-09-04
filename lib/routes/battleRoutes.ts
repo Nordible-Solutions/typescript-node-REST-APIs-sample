@@ -6,10 +6,16 @@ export class Routes {
     bc = new battleController();
 
     public routes(app): void {
+
         app.route('/')
             .get((req: Request, res: Response) => {
                 res.status(200).send('Welcome to battles API');
             });
+
+        app.route('/login')
+            .post(this.bc.LoginBattlesAPI);
+
+        app.use(this.bc.VerifyToken);
 
         //returns list(array) of all the places where battle has taken place
         app.route('/list')

@@ -10,6 +10,9 @@ class Routes {
             .get((req, res) => {
             res.status(200).send('Welcome to battles API');
         });
+        app.route('/login')
+            .post(this.bc.LoginBattlesAPI);
+        app.use(this.bc.VerifyToken);
         //returns list(array) of all the places where battle has taken place
         app.route('/list')
             .get(this.bc.ListAllBattles);

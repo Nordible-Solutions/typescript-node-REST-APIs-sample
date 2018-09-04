@@ -2,8 +2,31 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require("mongoose");
 const battleModels_1 = require("../models/battleModels");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const config_1 = require("../config/config");
 const battles = mongoose.model('battles', battleModels_1.battleSchema);
 class battleController {
+    VerifyToken(req, res, next) {
+        var token = req.headers['x-access-token'];
+        if (!token)
+            return res.status(403).send({ auth: false, message: 'No token provided.' });
+        jwt.verify(token, config_1.default.SECRET, function (err, decoded) {
+            if (err)
+                return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+            next();
+        });
+    }
+    LoginBattlesAPI(req, res) {
+        let passwordIsValid = bcrypt.compareSync(req.body.password, config_1.default.PASSWORD);
+        if (!passwordIsValid || req.body.username !== config_1.default.USERNAME)
+            return res.status(401).send({ auth: false, token: null });
+        let hashedPassword = bcrypt.hashSync(req.body.password, 8);
+        let token = jwt.sign({ id: config_1.default.USERNAME }, config_1.default.SECRET, {
+            expiresIn: 86400 // expires in 24 hours
+        });
+        res.status(200).send({ auth: true, token: token });
+    }
     BattleSearch(req, res) {
         let query = {};
         let king = req.query.king;
@@ -53,7 +76,7 @@ class battleController {
         }
         battles.find(query, (err, allBattles) => {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send("error");
             }
             res.status(200).json(allBattles);
         });
@@ -64,19 +87,23 @@ class battleController {
                 $facet: {
                     q: [
                         { $match: { attacker_king: { $exists: true, $nin: ["", null] } } },
-                        { $count: "total" }
+                        { $count: "total" },
+                        { $sort: { "battle_number": 1 } }
                     ],
                     q0: [
                         { $match: { defender_king: { $exists: true, $nin: ["", null] } } },
-                        { $count: "total" }
+                        { $count: "total" },
+                        { $sort: { "battle_number": 1 } }
                     ],
                     q1: [
                         { $match: { region: { $exists: true, $nin: ["", null] } } },
-                        { $count: "total" }
+                        { $count: "total" },
+                        { $sort: { "battle_number": 1 } }
                     ],
                     q2: [
                         { $match: { name: { $exists: true, $nin: ["", null] } } },
-                        { $count: "total" }
+                        { $count: "total" },
+                        { $sort: { "battle_number": 1 } }
                     ],
                     q3: [
                         { $match: { attacker_outcome: 'win' } },
@@ -135,7 +162,7 @@ class battleController {
         ])
             .exec((err, battles) => {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send("error");
             }
             res.status(200).json(battles);
         });
@@ -143,7 +170,7 @@ class battleController {
     CountAllBattles(req, res) {
         battles.count({}, (err, count) => {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send("error");
             }
             res.status(200).json(count);
         });
@@ -151,7 +178,7 @@ class battleController {
     ListAllBattles(req, res) {
         battles.find({}, (err, allBattles) => {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send("error");
             }
             res.status(200).json(allBattles);
         });
