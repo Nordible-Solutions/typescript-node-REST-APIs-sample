@@ -1,7 +1,5 @@
 # Typescript node REST API sample
 
-**typescript-node**
-
 This is a sample typescript node REST API implementation
 
 **Run it locally**
