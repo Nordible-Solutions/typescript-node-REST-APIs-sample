@@ -16,4 +16,4 @@ This is a sample typescript node REST API implementation
 
 Code licensed under [MIT](https://opensource.org/licenses/MIT). Everything else is [CC](http://creativecommons.org/)
 
-&copy; [Zameer](http://xameeramir.github.io/hello-world/)
+&copy; [nordible](https://nordible.com/)
